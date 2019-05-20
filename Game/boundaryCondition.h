@@ -3,8 +3,10 @@
 
 namespace boundaryCondition
 {
-	void none(shared_ptr<Board> board);
-	void cylindrical(shared_ptr<Board> board);
-	void spherical(shared_ptr<Board> board);
+	void none(const shared_ptr<Board>& board);
+	
+	void cylindrical(const shared_ptr<Board>& board);
+
+	void spherical(const shared_ptr<Board>& board);
 };
 

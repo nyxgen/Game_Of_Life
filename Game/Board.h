@@ -1,25 +1,36 @@
 #pragma once
 
 #include <vector>
+#include <SFML/Graphics.hpp>
 #include "Tile.h"
-#include "ConsoleUtility.h"
 
 using namespace std;
-using namespace consoleUtility;
 
 class Board
 {
-	shared_ptr<vector<vector<shared_ptr<Tile>>>> board = make_shared<vector<vector<shared_ptr<Tile>>>>();
-	pair<int, int> position;
+	shared_ptr<vector<vector<shared_ptr<Tile>>>> _board = make_shared<vector<vector<shared_ptr<Tile>>>>();
+	shared_ptr<vector<pair<int,int>>> _aliveCells = make_shared<vector<pair<int,int>>>();
+	sf::Vector2u _position;
+	sf::Vector2u _boardSize;
 public:
 	Board() = delete;
-	Board(int& sizeX, int& sizeY);
-	Board(int&& sizeX, int&& sizeY);
+	Board(const sf::Vector2u& size);
 	~Board();
-	shared_ptr<Tile> getTile(int positionX, int positionY);
-	void setPostion(pair<int, int> position);
-	pair<int, int> getPosition();
-	pair<int, int> getSize();
 
+	const shared_ptr<Tile>& tile(const int& positionX, const int& positionY);
+	
+	void alive(const int& positionX, const int& positionY, const bool& state);
+
+	sf::Vector2u const& position();
+	void position(const sf::Vector2u& position);
+
+	const sf::Vector2u& size();
+
+	void boardSize(const sf::Vector2u& boardSize);
+	const sf::Vector2u& boardSize();
+
+	const shared_ptr<vector<pair<int, int>>>& aliveCells();
+
+	void clear();
 };
 

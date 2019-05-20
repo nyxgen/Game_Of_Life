@@ -1,162 +1,176 @@
 #include "boundaryCondition.h"
 
-void boundaryCondition::none(shared_ptr<Board> board)
+void boundaryCondition::none(const shared_ptr<Board>& board)
 {
-	pair<int, int> boardSize = board->getSize();
-	vector<vector<int>> map(boardSize.first);
-	for (int i = 0; i < boardSize.first; i++)
+	sf::Vector2u boardSize = board->size();
+	static vector<vector<int>> map;
+	map.resize(boardSize.x);
+	for (auto& i : map)
 	{
-		map[i] = vector<int>(boardSize.second);
+		i.clear();
+		i.resize(boardSize.y);
 	}
+	const shared_ptr<vector<pair<int, int>>>& aliveCells = board->aliveCells();
 
-	for (int i = 0; i < boardSize.first; i++)
+	for (auto& i : (*aliveCells))
 	{
-		for (int j = 0; j < boardSize.second; j++)
+		if (i.first - 1 >= 0)
 		{
-			if (board->getTile(i, j)->isAlive())
-			{
-				if (i - 1 >= 0)
-				{
-					if (j - 1 >= 0)
-						map[i - 1][j - 1]++;
-					if (j + 1 < boardSize.second)
-						map[i - 1][j + 1]++;
-					map[i - 1][j]++;
-				}
-
-				if (i + 1 < boardSize.first)
-				{
-					if (j - 1 >= 0)
-						map[i + 1][j - 1]++;
-					if (j + 1 < boardSize.second)
-						map[i + 1][j + 1]++;
-					map[i + 1][j]++;
-				}
-
-				if (j - 1 >= 0)
-					map[i][j - 1]++;
-				if (j + 1 < boardSize.second)
-					map[i][j + 1]++;
-			}
+			if (i.second - 1 >= 0)
+				++map[i.first - 1][i.second - 1];
+			if (i.second + 1 < boardSize.y)
+				++map[i.first - 1][i.second + 1];
+			++map[i.first - 1][i.second];
 		}
-	}
-	for (int i = 0; i < boardSize.first; i++)
-	{
-		for (int j = 0; j < boardSize.second; j++)
+
+		if (i.first + 1 < boardSize.x)
 		{
-			if (map[i][j] == 3)
+			if (i.second - 1 >= 0)
+				++map[i.first + 1][i.second - 1];
+			if (i.second + 1 < boardSize.y)
+				++map[i.first + 1][i.second + 1];
+			++map[i.first + 1][i.second];
+		}
+
+		if (i.second - 1 >= 0)
+			++map[i.first][i.second - 1];
+		if (i.second + 1 < boardSize.y)
+			++map[i.first][i.second + 1];
+	}
+
+	int k{ 0 };
+	int l{ 0 };
+
+	for (auto& i : map)
+	{
+		for (auto& j : i)
+		{
+			if (j == 3)
 			{
-				board->getTile(i, j)->setAlive();
+				board->alive(k, l, true);
 			}
-			else if (board->getTile(i, j)->isAlive() && map[i][j] == 2)
+			else if (board->tile(k, l)->alive() && j == 2)
 			{
-				board->getTile(i, j)->setAlive();
+				board->alive(k, l, true);
 			}
 			else
 			{
-				board->getTile(i, j)->setDead();
+				board->alive(k, l, false);
 			}
+			++l;
 		}
+		++k;
+		l = 0;
 	}
 }
 
-void boundaryCondition::cylindrical(shared_ptr<Board> board)
+void boundaryCondition::cylindrical(const shared_ptr<Board>& board)
 {
-	pair<int, int> boardSize = board->getSize();
-	vector<vector<int>> map(boardSize.first);
-	for (int i = 0; i < boardSize.first; i++)
+	sf::Vector2u boardSize = board->size();
+	static vector<vector<int>> map;
+	map.resize(boardSize.x);
+	for (auto& i : map)
 	{
-		map[i] = vector<int>(boardSize.second);
+		i.clear();
+		i.resize(boardSize.y);
 	}
 
-	for (int i = 0; i < boardSize.first; i++)
-	{
-		for (int j = 0; j < boardSize.second; j++)
-		{
-			if (board->getTile(i, j)->isAlive())
-			{
-				if (j - 1 >= 0)
-				{
-					map[(i - 1 + boardSize.first) % boardSize.first][j - 1]++;
-					map[(i + boardSize.first) % boardSize.first][j - 1]++;
-					map[(i + 1 + boardSize.first) % boardSize.first][j - 1]++;
-				}
-				if (j + 1 < boardSize.second)
-				{
-					map[(i - 1 + boardSize.first) % boardSize.first][j + 1]++;
-					map[(i + boardSize.first) % boardSize.first][j + 1]++;
-					map[(i + 1 + boardSize.first) % boardSize.first][j + 1]++;
-				}
+	const shared_ptr<vector<pair<int, int>>>& aliveCells = board->aliveCells();
 
-				map[(i - 1 + boardSize.first) % boardSize.first][j]++;
-				map[(i + 1 + boardSize.first) % boardSize.first][j]++;
-			}
+	for (auto& i : (*aliveCells))
+	{
+		if (i.second - 1 >= 0)
+		{
+			++map[(i.first - 1 + boardSize.x) % boardSize.x][i.second - 1];
+			++map[(i.first + boardSize.x) % boardSize.x][i.second - 1];
+			++map[(i.first + 1 + boardSize.x) % boardSize.x][i.second - 1];
 		}
-	}
-	for (int i = 0; i < boardSize.first; i++)
-	{
-		for (int j = 0; j < boardSize.second; j++)
+		if (i.second + 1 < boardSize.y)
 		{
-			if (map[i][j] == 3)
+			++map[(i.first - 1 + boardSize.x) % boardSize.x][i.second + 1];
+			++map[(i.first + boardSize.x) % boardSize.x][i.second + 1];
+			++map[(i.first + 1 + boardSize.x) % boardSize.x][i.second + 1];
+		}
+
+		++map[(i.first - 1 + boardSize.x) % boardSize.x][i.second];
+		++map[(i.first + 1 + boardSize.x) % boardSize.x][i.second];
+	}
+
+	int k{ 0 };
+	int l{ 0 };
+
+	for (auto& i : map)
+	{
+		for (auto& j : i)
+		{
+			if (j == 3)
 			{
-				board->getTile(i, j)->setAlive();
+				board->alive(k, l, true);
 			}
-			else if (board->getTile(i, j)->isAlive() && map[i][j] == 2)
+			else if (board->tile(k, l)->alive() && j == 2)
 			{
-				board->getTile(i, j)->setAlive();
+				board->alive(k, l, true);
 			}
 			else
 			{
-				board->getTile(i, j)->setDead();
+				board->alive(k, l, false);
 			}
+			++l;
 		}
+		++k;
+		l = 0;
 	}
 }
 
-void boundaryCondition::spherical(shared_ptr<Board> board)
+void boundaryCondition::spherical(const shared_ptr<Board>& board)
 {
-	pair<int, int> boardSize = board->getSize();
-	vector<vector<int>> map(boardSize.first);
-	for (int i = 0; i < boardSize.first; i++)
+	sf::Vector2u boardSize = board->size();
+	static vector<vector<int>> map;
+	map.resize(boardSize.x);
+	for (auto& i : map)
 	{
-		map[i] = vector<int>(boardSize.second);
+		i.clear();
+		i.resize(boardSize.y);
 	}
 
-	for (int i = 0; i < boardSize.first; i++)
+	const shared_ptr<vector<pair<int, int>>>& aliveCells = board->aliveCells();
+
+	for (auto& i : (*aliveCells))
 	{
-		for (int j = 0; j < boardSize.second; j++)
-		{
-			if (board->getTile(i, j)->isAlive())
-			{
-				map[(i - 1 + boardSize.first) % boardSize.first][(j - 1 + boardSize.second) % boardSize.second]++;
-				map[(i + boardSize.first) % boardSize.first][(j - 1 + boardSize.second) % boardSize.second]++;
-				map[(i + 1 + boardSize.first) % boardSize.first][(j - 1 + boardSize.second) % boardSize.second]++;
+		++map[(i.first - 1 + boardSize.x) % boardSize.x][(i.second - 1 + boardSize.y) % boardSize.y];
+		++map[(i.first + boardSize.x) % boardSize.x][(i.second - 1 + boardSize.y) % boardSize.y];
+		++map[(i.first + 1 + boardSize.x) % boardSize.x][(i.second - 1 + boardSize.y) % boardSize.y];
 
-				map[(i - 1 + boardSize.first) % boardSize.first][(j + 1 + boardSize.second) % boardSize.second]++;
-				map[(i + boardSize.first) % boardSize.first][(j + 1 + boardSize.second) % boardSize.second]++;
-				map[(i + 1 + boardSize.first) % boardSize.first][(j + 1 + boardSize.second) % boardSize.second]++;
+		++map[(i.first - 1 + boardSize.x) % boardSize.x][(i.second + 1 + boardSize.y) % boardSize.y];
+		++map[(i.first + boardSize.x) % boardSize.x][(i.second + 1 + boardSize.y) % boardSize.y];
+		++map[(i.first + 1 + boardSize.x) % boardSize.x][(i.second + 1 + boardSize.y) % boardSize.y];
 
-				map[(i - 1 + boardSize.first) % boardSize.first][j]++;
-				map[(i + 1 + boardSize.first) % boardSize.first][j]++;
-			}
-		}
+		++map[(i.first - 1 + boardSize.x) % boardSize.x][i.second];
+		++map[(i.first + 1 + boardSize.x) % boardSize.x][i.second];
 	}
-	for (int i = 0; i < boardSize.first; i++)
+
+	int k{ 0 };
+	int l{ 0 };
+	
+	for (auto& i : map)
 	{
-		for (int j = 0; j < boardSize.second; j++)
+		for (auto& j : i)
 		{
-			if (map[i][j] == 3)
+			if (j == 3)
 			{
-				board->getTile(i, j)->setAlive();
+				board->alive(k, l, true);
 			}
-			else if (board->getTile(i, j)->isAlive() && map[i][j] == 2)
+			else if (board->tile(k, l)->alive() && j == 2)
 			{
-				board->getTile(i, j)->setAlive();
+				board->alive(k, l, true);
 			}
 			else
 			{
-				board->getTile(i, j)->setDead();
+				board->alive(k, l, false);
 			}
+			++l;
 		}
+		++k;
+		l = 0;
 	}
 }
