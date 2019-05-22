@@ -35,6 +35,16 @@ bool const& Tile::alive()
 	return _alive;
 }
 
+void Tile::addNeighbour(const shared_ptr<Tile>& neighbour)
+{
+	_neighbours.push_back(neighbour);
+}
+
+const vector<shared_ptr<Tile>>& Tile::neighbours()
+{
+	return _neighbours;
+}
+
 void Tile::alive(const bool& state)
 {
 	using namespace sf;

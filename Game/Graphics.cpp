@@ -11,19 +11,19 @@ Graphics::~Graphics()
 
 void Graphics::display()
 {
-	window->display();
+	_window->display();
 }
 
 void Graphics::clear()
 {
-	window->clear(sf::Color::Black);
+	_window->clear(sf::Color::Black);
 }
-shared_ptr<sf::RenderWindow> Graphics::getWindow()
+const shared_ptr<sf::RenderWindow>& Graphics::window()
 {
-	return window;
+	return _window;
 }
 
-void Graphics::setWindow(shared_ptr<sf::RenderWindow> window)
+void Graphics::window(const shared_ptr<sf::RenderWindow>& window)
 {
-	this->window = window;
+	_window = window;
 }

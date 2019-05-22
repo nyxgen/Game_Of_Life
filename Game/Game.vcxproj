@@ -154,7 +154,6 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Menu.h" />
-    <ClInclude Include="Properties.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="Tile.h" />
   </ItemGroup>

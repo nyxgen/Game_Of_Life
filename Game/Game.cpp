@@ -279,9 +279,9 @@ void game::init()
 	gameBoard->boardSize(boardSize);
 	gameBoard->position(position);
 	graphics = make_shared<Graphics>();
-	graphics->setWindow(make_shared<sf::RenderWindow>(sf::VideoMode::getDesktopMode(), "Game of life", sf::Style::Fullscreen));
+	graphics->window(make_shared<sf::RenderWindow>(sf::VideoMode::getDesktopMode(), "Game of life", sf::Style::Fullscreen));
 	settings = make_shared<Settings>();
-	settings->window(graphics->getWindow());
+	settings->window(graphics->window());
 	loadStructureFiles();
 	menu = make_shared<Menu>(settings);
 	menu->load("Config/menu.cfg");
@@ -297,7 +297,7 @@ void game::set()
 	{
 		game::changeButtonText(settings->getFile(), "fileBox");
 		game::changeButtonText(to_string(currentFps), "fpsBox");
-		targetFps = (int)(menu->findButton("fpsSlider")->slider() * 1000);
+		targetFps = (int)(menu->button("fpsSlider")->slider() * 1000);
 		if (targetFps <= 0)
 			targetFps = 1;
 		game::changeButtonText(to_string(targetFps), "fpsSlider");
@@ -324,7 +324,7 @@ void game::start()
 	try
 	{
 		game::changeButtonText(to_string(currentFps), "fpsBox");
-		targetFps = (int)(menu->findButton("fpsSlider")->slider() * 1000);
+		targetFps = (int)(menu->button("fpsSlider")->slider() * 1000);
 		if (targetFps <= 0)
 			targetFps = 1;
 		game::changeButtonText(to_string(targetFps), "fpsSlider");
@@ -379,7 +379,7 @@ void game::pause()
 	{
 		game::changeButtonText(settings->getFile(), "fileBox");
 		game::changeButtonText(to_string(currentFps), "fpsBox");
-		targetFps = (int)(menu->findButton("fpsSlider")->slider() * 1000);
+		targetFps = (int)(menu->button("fpsSlider")->slider() * 1000);
 		if (targetFps <= 0)
 			targetFps = 1;
 		game::changeButtonText(to_string(targetFps), "fpsSlider");
@@ -395,7 +395,7 @@ void game::changeButtonText(string text, string buttonName)
 {
 	try
 	{
-		menu->findButton(buttonName)->text(text);
+		menu->button(buttonName)->text(text);
 	}
 	catch (exception e) {};
 }
@@ -405,13 +405,13 @@ void game::game()
 	game::init();
 	sf::Clock MainClock;
 	int controlTime = 1;
-	while (graphics->getWindow()->isOpen())
+	while (graphics->window()->isOpen())
 	{
 		sf::Event event;
-		while (graphics->getWindow()->pollEvent(event))
+		while (graphics->window()->pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed)
-				graphics->getWindow()->close();
+				graphics->window()->close();
 		}
 		int time = MainClock.getElapsedTime().asMicroseconds();
 		if (time > controlTime)
@@ -511,13 +511,13 @@ void game::drawBoard(shared_ptr<Board> board)
 		rs.setSize(sf::Vector2f(size + over + over));
 		rs.setPosition(sf::Vector2f(position - over));
 		rs.setFillColor(sf::Color(125, 125, 125));
-		graphics->getWindow()->draw(rs);
+		graphics->window()->draw(rs);
 
 		sf::RectangleShape rs2;
 		rs2.setSize(sf::Vector2f(size));
 		rs2.setPosition(sf::Vector2f(position));
 		rs2.setFillColor(sf::Color::Red);
-		graphics->getWindow()->draw(rs2);
+		graphics->window()->draw(rs2);
 	}
 
 	shared_ptr<vector<pair<int, int>>> aliveCells = board->aliveCells();
@@ -530,7 +530,7 @@ void game::drawBoard(shared_ptr<Board> board)
 			va.append(vertexes[k]);
 		}
 	}
-	graphics->getWindow()->draw(va);
+	graphics->window()->draw(va);
 }
 
 void game::checkBoard(shared_ptr<Board> board)

@@ -58,7 +58,7 @@ bool Button::isTargeted()
 	{
 		changeColor(_activeColor);
 		if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
-			getCursorPosition();
+			cursorPosition();
 	}
 	else
 	{
@@ -66,7 +66,7 @@ bool Button::isTargeted()
 	}
 	return targeted;
 }
-sf::Vector2i Button::getCursorPosition()
+const sf::Vector2i& Button::cursorPosition()
 {
 	sf::Vector2i currentPosition = sf::Mouse::getPosition() - sf::Vector2i(_border.left, _border.top);
 	_slider = 1.0* currentPosition.x / (0.95 * _border.width);
@@ -171,63 +171,63 @@ void Button::draw()
 	
 }
 
-shared_ptr<Button> Menu::findButton(string name)
+const shared_ptr<Button>& Menu::button(const string& name)
 {
-	for (int i = 0; i < buttons.size(); i++)
+	for (auto& i : buttons)
 	{
-		if (buttons[i]->name() == name)
-			return buttons[i];
+		if (i->name() == name)
+			return i;
 	}
 	throw exception("Nie znaleziono");
 }
 
 void Menu::showMenu()
 {
-	settings->window()->clear(sf::Color(0, 0, 0, 255));
-	settings->window()->draw(background);
-	for (int i = 0; i < buttons.size(); ++i)
+	_settings->window()->clear(sf::Color(0, 0, 0, 255));
+	_settings->window()->draw(_background);
+	for(auto& i : buttons)
 	{
-		(*buttons[i]).draw();
+		i->draw();
 	}
 }
 
 void Menu::checkMenu()
 {
-	for (int i = 0; i < buttons.size(); ++i)
+	for (auto& i : buttons)
 	{
-		if (buttons[i]->isTargeted() && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		if (i->isTargeted() && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-				buttons[i]->_action(settings);
+				i->_action(_settings);
 		}
 	}
 }
 
-void Menu::setBackgroundTexture(string texture)
+void Menu::backgroundTexture(const string& texture)
 {
-	backgroundTexture.loadFromFile(texture);
-	background.setTexture(&backgroundTexture);
+	_backgroundTexture.loadFromFile(texture);
+	_background.setTexture(&_backgroundTexture);
 }
 
-Menu::Menu(shared_ptr<Settings> options, unsigned int buttonCount)
+Menu::Menu(const shared_ptr<Settings>& options, const unsigned int& buttonCount)
 {
-	settings = options;
-	sf::Vector2f size = sf::Vector2f(settings->window()->getSize());
-	background.setSize(size);
+	_settings = options;
+	sf::Vector2f size = sf::Vector2f(_settings->window()->getSize());
+	_background.setSize(size);
 	for (int i = 0; i < buttonCount; ++i)
 	{
-		buttons.push_back(make_shared<Button>(sf::Vector2f(200, 100), sf::Vector2f(800, 200 + i * 150), settings));
+		buttons.push_back(make_shared<Button>(sf::Vector2f(200, 100), sf::Vector2f(800, 200 + i * 150), _settings));
 	}
 }
 
-Menu::Menu(shared_ptr<Settings> settings)
+Menu::Menu(const shared_ptr<Settings>& settings)
 {
-	this->settings = settings;
+	_settings = settings;
 	sf::Vector2f size = sf::Vector2f(settings->window()->getSize());
-	background.setSize(size);
+	_background.setSize(size);
 }
 
-void Menu::load(string path)
+void Menu::load(const string& path)
 {
 	fstream file;
 	file.open(path, ios::in);
@@ -241,7 +241,7 @@ void Menu::load(string path)
 			if (word2 == "Button")
 			{
 				shared_ptr<Button> button = make_shared<Button>();
-				button->settings(settings);
+				button->settings(_settings);
 				string word3;
 				int x, y, fontSize, sizeX, sizeY, R, G, B, alfa;
 				string font, text, texture, function, name, type;
@@ -315,7 +315,7 @@ void Menu::load(string path)
 					if (word3 == "Path")
 					{
 						file >> texture;
-						this->setBackgroundTexture(texture);
+						backgroundTexture(texture);
 					}
 				}
 			}

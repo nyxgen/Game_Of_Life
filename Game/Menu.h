@@ -53,23 +53,24 @@ public:
 
 	void draw();
 	bool isTargeted();
-	sf::Vector2i getCursorPosition();
+	const sf::Vector2i& cursorPosition();
 };
 
 class Menu
 {
-	sf::RectangleShape background;
-	sf::Texture backgroundTexture;
-	shared_ptr<Settings> settings;
+	sf::RectangleShape _background;
+	sf::Texture _backgroundTexture;
+	shared_ptr<Settings> _settings;
 public:
+	Menu(const shared_ptr<Settings>& settings, const unsigned int& buttonCount);
+	Menu(const shared_ptr<Settings>& settings);
 	vector<shared_ptr<Button>> buttons;
-	shared_ptr<Button> findButton(string name);
+	const shared_ptr<Button>& button(const string& name);
 	void showMenu();
 	void checkMenu();
-	void setBackgroundTexture(string);
-	void load(string path);
-	Menu(shared_ptr<Settings> settings, unsigned int buttonCount);
-	Menu(shared_ptr<Settings> settings);
+	void backgroundTexture(const string& path);
+	void load(const string& path);
+	
 	~Menu();
 };
 

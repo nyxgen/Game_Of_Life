@@ -13,6 +13,7 @@ class Tile
 	bool _alive;
 	sf::Vector2u _position;
 	sf::Vector2u _size;
+	vector<shared_ptr<Tile>> _neighbours;
 	vector<sf::Vertex> _vertex;
 	sf::FloatRect _border;
 	void alive(const bool& state);
@@ -22,6 +23,9 @@ public:
 	~Tile();
 
 	bool const& alive();
+
+	void addNeighbour(const shared_ptr<Tile>& neighbour);
+	const vector<shared_ptr<Tile>>& neighbours();
 
 	void position(const sf::Vector2u& position);
 	sf::Vector2u const& position();
