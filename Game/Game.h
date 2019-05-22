@@ -6,12 +6,10 @@
 #include <iostream>
 
 #include "Board.h"
-#include "boundaryCondition.h"
+#include "BoundaryConditions.h"
 #include "Control.h"
 #include "Menu.h"
 #include "Settings.h"
-
-
 
 namespace game
 {

@@ -30,7 +30,7 @@ void game::loadSettings(string filePath)
 	}
 
 	try {
-		size = sf::Vector2u(pt.get<int>("Board.SizeX"), pt.get<int>("Board.SizeY"));
+		size = sf::Vector2u(pt.get<int>("Board.TilesInRow"), pt.get<int>("Board.TilesInColumn"));
 	}
 	catch (exception e)
 	{
@@ -38,7 +38,7 @@ void game::loadSettings(string filePath)
 	};
 
 	try {
-		boardSize = sf::Vector2u(pt.get<int>("Board.BoardSizeX"), pt.get<int>("Board.BoardSizeY"));
+		boardSize = sf::Vector2u(pt.get<int>("Board.HorizontalBoardSize"), pt.get<int>("Board.VerticalBoardSize"));
 	}
 	catch (exception e)
 	{
@@ -47,7 +47,7 @@ void game::loadSettings(string filePath)
 
 
 	try {
-		position = sf::Vector2u(pt.get<int>("Board.PositionX"), pt.get<int>("Board.PositionY"));
+		position = sf::Vector2u(pt.get<int>("Board.HorizontalBoardPosition"), pt.get<int>("Board.HorizontalBoardPosition"));
 	}
 	catch (exception e)
 	{
@@ -96,7 +96,7 @@ void game::loadStructure(string filePath)
 {
 	boost::filesystem::path p{ filePath };
 	boost::filesystem::ifstream ifs{ p };
-	int x = 0, y = 0;
+    int x = 0, y = 0;
 	int currentPositionX = 0;
 	int currentPositionY = 0;
 	char data;
@@ -150,12 +150,12 @@ void game::loadStructure(string filePath)
 		{
 			if (number == 0)
 				number = 1;
-			for (int i = 0; i < number; i++)
+			for ( int i = 0; i < number; ++i)
 			{
 				if (currentPositionX >= x)
 				{
 					currentPositionX = 0;
-					currentPositionY++;
+					++currentPositionY;
 					if (currentPositionY >= y)
 						return;
 				}
@@ -163,7 +163,7 @@ void game::loadStructure(string filePath)
 					gameBoard->alive(currentPositionX, currentPositionY, false);
 				}
 				catch (exception e) {}
-				currentPositionX++;
+				++currentPositionX;
 			}
 			number = 0;
 			
@@ -172,12 +172,12 @@ void game::loadStructure(string filePath)
 		{
 			if (number == 0)
 				number = 1;
-			for (int i = 0; i < number; i++)
+			for ( int i = 0; i < number; ++i)
 			{
 				if (currentPositionX >= x)
 				{
 					currentPositionX = 0;
-					currentPositionY++;
+					++currentPositionY;
 					if (currentPositionY >= y)
 						return;
 				}
@@ -185,7 +185,7 @@ void game::loadStructure(string filePath)
 					gameBoard->alive(currentPositionX, currentPositionY, true);
 				}
 				catch (exception e)	{}
-				currentPositionX++;
+				++currentPositionX;
 				
 			}
 			number = 0;
@@ -193,7 +193,7 @@ void game::loadStructure(string filePath)
 		else if (data == '$')
 		{
 			currentPositionX = 0;
-			currentPositionY++;
+			++currentPositionY;
 		}
 		else if (data == '!')
 		{
@@ -218,9 +218,9 @@ void game::saveStructure(string filePath, bool overwrite, bool readyToLoad)
 	boost::filesystem::path p{ filePath };
 	boost::filesystem::ofstream ofs{ p };
 
-	sf::Vector2u size = gameBoard->size(); 
+	sf::Vector2u size = gameBoard->tilesCount(); 
 	sf::Vector2u currentPosition = sf::Vector2u(0, 0);
-	int number = 0;
+	 int number = 0;
 	ofs << "x = " << size.x << ", y = " << size.y << "," << endl;
 	for (int i = 0; i < size.x; i++)
 	{
@@ -276,7 +276,7 @@ void game::init()
 	loadSettings("Config/config.ini");
 	size = size;
 	gameBoard = make_shared<Board>(size);
-	gameBoard->boardSize(boardSize);
+	gameBoard->size(boardSize);
 	gameBoard->position(position);
 	graphics = make_shared<Graphics>();
 	graphics->window(make_shared<sf::RenderWindow>(sf::VideoMode::getDesktopMode(), "Game of life", sf::Style::Fullscreen));
@@ -288,6 +288,12 @@ void game::init()
 	itteration = 0;
 	targetFps = 1;
 	currentFps = 1;
+	if (boundaryCondition == "NONE")
+		BoundaryConditions::initNone(gameBoard);
+	else if (boundaryCondition == "CYLINDRICAL")
+		BoundaryConditions::initCylindrical(gameBoard);
+	else if (boundaryCondition == "SPHERICAL")
+		BoundaryConditions::initSpherical(gameBoard);
 }
 
 void game::set()
@@ -297,7 +303,7 @@ void game::set()
 	{
 		game::changeButtonText(settings->getFile(), "fileBox");
 		game::changeButtonText(to_string(currentFps), "fpsBox");
-		targetFps = (int)(menu->button("fpsSlider")->slider() * 1000);
+		targetFps = static_cast<int>((menu->button("fpsSlider")->slider() * 1000));
 		if (targetFps <= 0)
 			targetFps = 1;
 		game::changeButtonText(to_string(targetFps), "fpsSlider");
@@ -313,7 +319,6 @@ void game::set()
 void game::reset()
 {
 	gameBoard->clear();
-	gameBoard->aliveCells()->clear();
 	loadStructure(settings->loadedStructure());
 }
 
@@ -324,7 +329,7 @@ void game::start()
 	try
 	{
 		game::changeButtonText(to_string(currentFps), "fpsBox");
-		targetFps = (int)(menu->button("fpsSlider")->slider() * 1000);
+		targetFps = static_cast<int>((menu->button("fpsSlider")->slider() * 1000));
 		if (targetFps <= 0)
 			targetFps = 1;
 		game::changeButtonText(to_string(targetFps), "fpsSlider");
@@ -333,10 +338,10 @@ void game::start()
 	menu->showMenu();
 	menu->checkMenu();
 	drawBoard(gameBoard);
-	int time = clock.getElapsedTime().asMicroseconds();
+	sf::Int64 time = clock.getElapsedTime().asMicroseconds();
 	if (time > 1000000 / targetFps)
 	{
-		currentFps = 1000000 / time;
+		currentFps = 1000000 / static_cast<int>(time);
 		clock.restart();
 		nextItteration(gameBoard);
 	}
@@ -359,7 +364,6 @@ void game::prev()
 	if (it < 0)
 		return;
 	int toLoad = it / 50 * 50;
-	gameBoard->aliveCells()->clear();
 	game::gameBoard->clear();
 	loadStructure("Tmp/" + to_string(toLoad) + ".rle");
 	//game::reset();
@@ -379,7 +383,7 @@ void game::pause()
 	{
 		game::changeButtonText(settings->getFile(), "fileBox");
 		game::changeButtonText(to_string(currentFps), "fpsBox");
-		targetFps = (int)(menu->button("fpsSlider")->slider() * 1000);
+		targetFps = static_cast<int>(menu->button("fpsSlider")->slider() * 1000);
 		if (targetFps <= 0)
 			targetFps = 1;
 		game::changeButtonText(to_string(targetFps), "fpsSlider");
@@ -413,7 +417,7 @@ void game::game()
 			if (event.type == sf::Event::Closed)
 				graphics->window()->close();
 		}
-		int time = MainClock.getElapsedTime().asMicroseconds();
+		sf::Int64 time = MainClock.getElapsedTime().asMicroseconds();
 		if (time > controlTime)
 		{
 			if (settings->state() == "reset")
@@ -459,7 +463,6 @@ void game::game()
 			{
 				gameBoard->clear();
 				game::itteration = 0;
-				gameBoard->aliveCells()->clear();
 				game::loadStructure(settings->getFile());
 				settings->state("pause");
 				controlTime = 100000;
@@ -489,23 +492,18 @@ void game::game()
 
 void game::nextItteration(shared_ptr<Board> board)
 {
-	if (game::boundaryCondition == "CYLINDRICAL")
-		boundaryCondition::cylindrical(board);
-	else if (game::boundaryCondition == "SPHERICAL")
-		boundaryCondition::spherical(board);
-	else
-		boundaryCondition::none(board);
-	game::itteration++;
+	BoundaryConditions::calc(board);
+	++game::itteration;
 }
 
 void game::drawBoard(shared_ptr<Board> board)
 {
 	static sf::VertexArray va(sf::Quads);
 	va.clear();
-	if (board->size().x > 0 && board->size().y > 0)
+	if (board->tilesCount().x > 0 && board->tilesCount().y > 0)
 	{
 		sf::Vector2u over = sf::Vector2u(15, 15);
-		sf::Vector2u size = board->boardSize();
+		sf::Vector2u size = board->size();
 		sf::Vector2u position = board->position();
 		sf::RectangleShape rs;
 		rs.setSize(sf::Vector2f(size + over + over));
@@ -519,15 +517,14 @@ void game::drawBoard(shared_ptr<Board> board)
 		rs2.setFillColor(sf::Color::Red);
 		graphics->window()->draw(rs2);
 	}
-
-	shared_ptr<vector<pair<int, int>>> aliveCells = board->aliveCells();
-
-	for (int i = 0; i < aliveCells->size(); i++)
+	for (auto& i : (*board->tiles()))
 	{
-	vector<sf::Vertex> vertexes = board->tile((*aliveCells)[i].first, (*aliveCells)[i].second)->vertexes();
-		for (int k = 0; k < vertexes.size(); k++)
+		for (auto& j : i)
 		{
-			va.append(vertexes[k]);
+			for (auto& k : j->vertexes())
+			{
+				va.append(k);
+			}
 		}
 	}
 	graphics->window()->draw(va);
@@ -535,22 +532,22 @@ void game::drawBoard(shared_ptr<Board> board)
 
 void game::checkBoard(shared_ptr<Board> board)
 {
-	for (int i = 0; i < board->size().x; i++)
+	for (auto& i : (*board->tiles()))
 	{
-		for (int j = 0; j < board->size().y; j++)
+		for (auto& j : i)
 		{
-			board->tile(i, j)->targeted();
+				j->targeted();
 		}
 	}
 }
 
 void game::setBoard(shared_ptr<Board> board)
 {
-	for (int i = 0; i < board->size().x; i++)
+	for (auto& i : (*board->tiles()))
 	{
-		for (int j = 0; j < board->size().y; j++)
+		for (auto& j : i)
 		{
-			board->tile(i, j)->setState();
+			j->setState();
 		}
 	}
 }

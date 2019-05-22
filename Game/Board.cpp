@@ -1,17 +1,17 @@
 #include "Board.h"
 
-Board::Board(const sf::Vector2u& size)
+Board::Board(const sf::Vector2u& tilesCount)
 {
 	_position = sf::Vector2u(0, 0);
-	_board->resize(size.x);
+	_board->resize(tilesCount.x);
 	int k{ 0 };
 	int l{ 0 };
 	for (auto& i : (*_board))
 	{
-		i.resize(size.y);
+		i.resize(tilesCount.y);
 		for (auto& j : i)
 		{
-			j = make_shared<Tile>(sf::Vector2u(_position.x + k * _boardSize.x / size.x, _position.y + l *_boardSize.y / size.y), sf::Vector2u(_boardSize.x / size.x, _boardSize.y / size.y));
+			j = make_shared<Tile>(sf::Vector2u(_position.x + k * _size.x / tilesCount.x, _position.y + l *_size.y / tilesCount.y), sf::Vector2u(_size.x / tilesCount.x, _size.y / tilesCount.y), sf::Vector2u(k,l));
 			++l;
 		}
 		++k;
@@ -21,6 +21,11 @@ Board::Board(const sf::Vector2u& size)
 
 Board::~Board()
 {
+}
+
+const shared_ptr<vector<vector<shared_ptr<Tile>>>>& Board::tiles()
+{
+	return _board;
 }
 
 const shared_ptr<Tile>& Board::tile(const int& positionX, const int& positionY)
@@ -37,33 +42,7 @@ const shared_ptr<Tile>& Board::tile(const int& positionX, const int& positionY)
 
 void Board::alive(const int& positionX, const int& positionY, const bool& state)
 {
-	if (state)
-	{
-		_aliveCells->push_back(pair<int, int>(positionX, positionY));
-		sort(_aliveCells->begin(), _aliveCells->end());
-		auto last = unique(_aliveCells->begin(), _aliveCells->end());
-		_aliveCells->erase(last, _aliveCells->end());
-		(*_board)[positionX][positionY]->alive(true);
-	}
-	else
-	{
-		bool found = false;
-		pair<int, int> toFind(positionX, positionY);
-		int position = 0;
-		for (int i = 0; i < _aliveCells->size() && !found; i++)
-		{
-			if ((*_aliveCells)[i] == toFind)
-			{
-				position = i;
-				found = true;
-			}
-
-		}
-		if (found)
-			_aliveCells->erase(_aliveCells->begin() + position);
-
-		(*_board)[positionX][positionY]->alive(false);
-	}
+	(*_board)[positionX][positionY]->alive(state);
 }
 
 sf::Vector2u const& Board::position()
@@ -75,13 +54,13 @@ void Board::position(const sf::Vector2u& position)
 {
 	_position = position;
 	int k{ 0 };
-	int l{ 0 };
+    int l{ 0 };
 	for (auto& i : (*_board))
 	{
 		for (auto& j : i)
 		{
-			j->position(sf::Vector2u(position.x + k * _boardSize.x / _board->size(), position.y + l * _boardSize.y / i.size()));
-			j->size(sf::Vector2u(_boardSize.x / _board->size(), _boardSize.y / i.size()));
+			j->position(sf::Vector2u(position.x + k * _size.x / _board->size(), position.y + l * _size.y / i.size()));
+			j->size(sf::Vector2u(_size.x / _board->size(), _size.y / i.size()));
 			++l;
 		}
 		++k;
@@ -89,7 +68,7 @@ void Board::position(const sf::Vector2u& position)
 	}
 }
 
-const sf::Vector2u& Board::size()
+const sf::Vector2u& Board::tilesCount()
 {
 	if (_board->size())
 		return sf::Vector2u(_board->size(), (*_board)[0].size());
@@ -97,9 +76,9 @@ const sf::Vector2u& Board::size()
 		return sf::Vector2u(0,0);
 }
 
-void Board::boardSize(const sf::Vector2u& boardSize)
+void Board::size(const sf::Vector2u& boardSize)
 {
-	_boardSize = boardSize;
+	_size = boardSize;
 	int k{ 0 };
 	int l{ 0 };
 	for (auto& i : (*_board))
@@ -115,14 +94,9 @@ void Board::boardSize(const sf::Vector2u& boardSize)
 	}
 }
 
-const sf::Vector2u& Board::boardSize()
+const sf::Vector2u& Board::size()
 {
-	return _boardSize;
-}
-
-const shared_ptr<vector<pair<int, int>>>& Board::aliveCells()
-{
-	return _aliveCells;
+	return _size;
 }
 
 void Board::clear()

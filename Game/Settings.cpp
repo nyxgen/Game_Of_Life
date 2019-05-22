@@ -71,3 +71,73 @@ const string& Settings::loadedStructure()
 {
 	return _loadedStructure;
 }
+
+void Settings::size(const sf::Vector2u & size)
+{
+	_size = size;
+}
+
+const sf::Vector2u & Settings::size()
+{
+	return _size;
+}
+
+void Settings::tilesNumber(const sf::Vector2u & tilesNumber)
+{
+	_tilesNumber = tilesNumber;
+}
+
+const sf::Vector2u & Settings::tilesNumber()
+{
+	return _tilesNumber;
+}
+
+void Settings::position(const sf::Vector2u & position)
+{
+	_position = position;
+}
+
+const sf::Vector2u & Settings::position()
+{
+	return _position;
+}
+
+void Settings::boundaryCondition(const string & bc)
+{
+	_boundaryCondition = bc;
+}
+
+const string & Settings::boundaryCondition()
+{
+	return _boundaryCondition;
+}
+
+void Settings::itterationNumber(const int & itterationNumber)
+{
+	_itterationNumber = itterationNumber;
+}
+
+const int & Settings::itterationNumber()
+{
+	return _itterationNumber;
+}
+
+void Settings::currentFPS(const int & currentFPS)
+{
+	_currentFps = currentFPS;
+}
+
+const int& Settings::currentFPS()
+{
+	return _currentFps;
+}
+
+void Settings::targetFPS(const int & targetFPS)
+{
+	_targetFps = targetFPS;
+}
+
+const int& Settings::targetFPS()
+{
+	return _targetFps;
+}

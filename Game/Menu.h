@@ -62,7 +62,7 @@ class Menu
 	sf::Texture _backgroundTexture;
 	shared_ptr<Settings> _settings;
 public:
-	Menu(const shared_ptr<Settings>& settings, const unsigned int& buttonCount);
+	Menu(const shared_ptr<Settings>& settings, const int& buttonCount);
 	Menu(const shared_ptr<Settings>& settings);
 	vector<shared_ptr<Button>> buttons;
 	const shared_ptr<Button>& button(const string& name);

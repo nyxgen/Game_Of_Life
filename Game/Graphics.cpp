@@ -2,7 +2,6 @@
 
 Graphics::Graphics()
 {
-
 }
 
 Graphics::~Graphics()

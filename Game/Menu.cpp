@@ -161,7 +161,7 @@ void Button::draw()
 	{
 		sf::RectangleShape slider;
 		int sliderWidth = 4;
-		slider.setPosition(sf::Vector2f(_border.left + this->_slider * (_border.width-sliderWidth), _border.top));
+		slider.setPosition(sf::Vector2f(_border.left + _slider * (_border.width-sliderWidth), _border.top));
 		slider.setSize(sf::Vector2f(sliderWidth, _border.height));
 		slider.setFillColor(sf::Color::White);
 		slider.setOutlineThickness(1);
@@ -209,7 +209,7 @@ void Menu::backgroundTexture(const string& texture)
 	_background.setTexture(&_backgroundTexture);
 }
 
-Menu::Menu(const shared_ptr<Settings>& options, const unsigned int& buttonCount)
+Menu::Menu(const shared_ptr<Settings>& options, const int& buttonCount)
 {
 	_settings = options;
 	sf::Vector2f size = sf::Vector2f(_settings->window()->getSize());
@@ -301,7 +301,7 @@ void Menu::load(const string& path)
 					else if (word3 == "Function")
 					{
 						file >> function;
-						button->function(getFunction(function));
+						button->function(Functions::getFunction(function));
 					}
 				}
 				button->borderInit();

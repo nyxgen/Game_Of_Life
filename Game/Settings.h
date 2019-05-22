@@ -9,6 +9,13 @@ class Settings
 	string _loadedStructure;
 	vector<string> _fileList;
 	int _chosenFileNumber;
+	sf::Vector2u _size;
+	sf::Vector2u _position;
+	sf::Vector2u _tilesNumber;
+	string _boundaryCondition;
+	int _itterationNumber;
+	int _currentFps;
+	int _targetFps;
 public:
 	Settings();
 	~Settings();
@@ -28,5 +35,27 @@ public:
 
 	void loadedStructure(const string& path);
 	const string& loadedStructure();
+
+	void size(const sf::Vector2u& size);
+	const sf::Vector2u& size();
+
+	void tilesNumber(const sf::Vector2u& tilesNumber);
+	const sf::Vector2u& tilesNumber();
+
+	void position(const sf::Vector2u& position);
+	const sf::Vector2u& position();
+
+	void boundaryCondition(const string& bc);
+	const string& boundaryCondition();
+	
+	void itterationNumber(const int& itterationNumber);
+	const int& itterationNumber();
+
+	void currentFPS(const int& currentFPS);
+	const int& currentFPS();
+
+	void targetFPS(const int& targetFPS);
+	const int& targetFPS();
 };
+
 
