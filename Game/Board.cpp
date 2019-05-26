@@ -99,6 +99,17 @@ const sf::Vector2u& Board::size()
 	return _size;
 }
 
+void Board::chechMouseActions()
+{
+	for (auto& i : (*_board))
+	{
+		for (auto& j : i)
+		{
+			j->setState();
+		}
+	}
+}
+
 void Board::clear()
 {
 	for (auto& i : (*_board))

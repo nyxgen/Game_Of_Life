@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "Board.h"
 
 using namespace std;
 class Graphics
@@ -11,6 +12,7 @@ public:
 	~Graphics();
 	void display();
 	void clear();
+	void drawBoard(const shared_ptr<Board>& board);
 	const shared_ptr<sf::RenderWindow>& window();
 	void window(const shared_ptr<sf::RenderWindow>& window);
 };

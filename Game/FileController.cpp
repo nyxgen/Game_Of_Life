@@ -16,11 +16,11 @@ void FileController::loadSettings(const string& filePath, const shared_ptr<Setti
 	}
 
 	try {
-		settings->size(sf::Vector2u(pt.get<int>("Board.TilesInRow"), pt.get<int>("Board.TilesInColumn")));
+		settings->tilesNumber(sf::Vector2u(pt.get<int>("Board.TilesInRow"), pt.get<int>("Board.TilesInColumn")));
 	}
 	catch (exception e)
 	{
-		settings->size(sf::Vector2u(10, 10));
+		settings->tilesNumber(sf::Vector2u(10, 10));
 	};
 
 	try {
@@ -28,7 +28,7 @@ void FileController::loadSettings(const string& filePath, const shared_ptr<Setti
 	}
 	catch (exception e)
 	{
-		settings->tilesNumber(sf::Vector2u(400, 400));
+		settings->size(sf::Vector2u(400, 400));
 	};
 
 

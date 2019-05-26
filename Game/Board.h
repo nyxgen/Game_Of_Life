@@ -29,6 +29,7 @@ public:
 	void size(const sf::Vector2u& boardSize);
 	const sf::Vector2u& size();
 
+	void chechMouseActions();
 
 	void clear();
 };

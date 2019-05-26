@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 #define ALIVE sf::Color::Blue
-#define DEAD sf::Color::Red
+#define DEAD sf::Color::Green
 
 using namespace std;
 
