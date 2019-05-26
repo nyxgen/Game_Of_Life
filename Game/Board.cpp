@@ -110,6 +110,7 @@ void Board::chechMouseActions()
 	}
 }
 
+
 void Board::clear()
 {
 	for (auto& i : (*_board))
