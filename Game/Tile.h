@@ -4,6 +4,7 @@
 
 #define ALIVE sf::Color::Blue
 #define DEAD sf::Color::Green
+#define FOCUSED sf::Color::Yellow
 
 using namespace std;
 
@@ -35,13 +36,13 @@ public:
 	void size(const sf::Vector2u& size);
 	sf::Vector2u const& size();
 
-	bool const& targeted();
-
-	void setState();
+	bool targeted();
+	void checkMouseActions(const sf::Mouse::Button& button, const bool & click);
 
 	void coords(const sf::Vector2u& coords);
 	const sf::Vector2u& coords();
 
+	void draw(const shared_ptr<sf::RenderWindow>& window);
 	vector<sf::Vertex> const& vertexes();
 
 };

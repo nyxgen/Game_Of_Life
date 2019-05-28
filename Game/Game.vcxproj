@@ -91,6 +91,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\Nyxgen\source\repos\Game\Game\include;E:\Libs\boost_1_67_0;E:\Libs\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>E:\Libs\SFML-2.5.1\lib;C:\Users\Nyxgen\source\repos\Game\Game\lib;E:\Libs\boost_1_67_0\libs;E:\Libs\boost_1_67_0\stage\x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -126,6 +127,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\Nyxgen\source\repos\Game\Game\include;E:\Libs\boost_1_67_0;E:\Libs\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -139,6 +141,8 @@
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="BoundaryConditions.cpp" />
+    <ClCompile Include="Button.cpp" />
+    <ClCompile Include="Control.cpp" />
     <ClCompile Include="FileController.cpp" />
     <ClCompile Include="Functions.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -152,6 +156,8 @@
   <ItemGroup>
     <ClInclude Include="Board.h" />
     <ClInclude Include="BoundaryConditions.h" />
+    <ClInclude Include="Button.h" />
+    <ClInclude Include="Control.h" />
     <ClInclude Include="FileController.h" />
     <ClInclude Include="Functions.h" />
     <ClInclude Include="Game.h" />

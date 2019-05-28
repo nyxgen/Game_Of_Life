@@ -13,11 +13,11 @@ Tile::Tile(const sf::Vector2u& size, const sf::Vector2u& position, const sf::Vec
 
 	int j{ 0 };
 
-	for (auto& v : _vertex)
+	for(auto& i : _vertex)
 	{
-		v.position.x = (j == 0 || j == 3) ? static_cast<float>(_position.x) : static_cast<float>(_position.x + _size.x);
-		v.position.y = (j == 0 || j == 1) ? static_cast<float>(_position.y) : static_cast<float>(_position.y + _size.y);
-		v.color = DEAD;
+		i.position.x = (j == 0 || j == 3) ? static_cast<float>(_position.x) : static_cast<float>(_position.x + _size.x);
+		i.position.y = (j == 0 || j == 1) ? static_cast<float>(_position.y) : static_cast<float>(_position.y + _size.y);
+		i.color = DEAD;
 		++j;
 	}
 
@@ -57,9 +57,11 @@ void Tile::alive(const bool& state)
 
 	_alive = state;
 
-	for (auto& v : _vertex)
+	int j{ 0 };
+	for(auto& i : _vertex)
 	{
-		v.color = _alive ? ALIVE : DEAD;
+		i.color = _alive ? ALIVE : DEAD;
+		++j;
 	}
 }
 
@@ -78,11 +80,11 @@ void Tile::position(const sf::Vector2u& position)
 
 	int j{ 0 };
 
-	for (auto& v : _vertex)
+	for(auto& i : _vertex)
 	{
-		v.position.x = (j == 0 || j == 3) ? static_cast<float>(_position.x) : static_cast<float>(_position.x + _size.x);
-		v.position.y = (j == 0 || j == 1) ? static_cast<float>(_position.y) : static_cast<float>(_position.y + _size.y);
-		v.color = _alive ?  ALIVE : DEAD;
+		i.position.x = (j == 0 || j == 3) ? static_cast<float>(_position.x) : static_cast<float>(_position.x + _size.x);
+		i.position.y = (j == 0 || j == 1) ? static_cast<float>(_position.y) : static_cast<float>(_position.y + _size.y);
+		i.color = _alive ?  ALIVE : DEAD;
 		++j;
 	}
 }
@@ -102,35 +104,46 @@ void Tile::size(const sf::Vector2u& size)
 
 	int j{ 0 };
 
-	for (auto& v : _vertex)
+	for(auto& i : _vertex)
 	{
-		v.position.x = (j == 0 || j == 3) ? static_cast<float>(_position.x) : static_cast<float>(_position.x + _size.x);
-		v.position.y = (j == 0 || j == 1) ? static_cast<float>(_position.y) : static_cast<float>(_position.y + _size.y);
-		int i = _position.y + _size.y;
-		v.color = _alive ? ALIVE : DEAD;
+		i.position.x = (j == 0 || j == 3) ? static_cast<float>(_position.x) : static_cast<float>(_position.x + _size.x);
+		i.position.y = (j == 0 || j == 1) ? static_cast<float>(_position.y) : static_cast<float>(_position.y + _size.y);
+		i.color = _alive ? ALIVE : DEAD;
 		++j;
 	}
 }
 
-bool const& Tile::targeted()
+bool Tile::targeted()
 {
 	using namespace sf;
-	return _border.contains(Vector2f(Mouse::getPosition()));
+	bool isTargeted = _border.contains(Vector2f(Mouse::getPosition()));
+	if (isTargeted)
+	{
+		for (auto& i : _vertex)
+			i.color = FOCUSED;
+	}
+	else
+	{
+		for (auto& i : _vertex)
+			i.color = _alive ? ALIVE : DEAD;
+	}
+	return isTargeted;
 }
 
-void Tile::setState()
+void Tile::checkMouseActions(const sf::Mouse::Button& button, const bool & click)
 {
-	using namespace sf;
-	if (targeted())
+	if (button == sf::Mouse::Left)
 	{
-		if (Mouse::isButtonPressed(Mouse::Left))
-		{
-			alive(true);
-		}
-		if (Mouse::isButtonPressed(Mouse::Right))
-		{
-			alive(false);
-		}
+		_alive = true;
+		for (auto& i : _vertex)
+			i.color = ALIVE;
+		
+	}
+	if (button == sf::Mouse::Right)
+	{
+		_alive = false;
+		for (auto& i : _vertex)
+			i.color = DEAD;
 	}
 }
 
@@ -144,8 +157,22 @@ const sf::Vector2u & Tile::coords()
 	return _coords;
 }
 
-vector<sf::Vertex> const& Tile::vertexes()
+void Tile::draw(const shared_ptr<sf::RenderWindow>& window)
+{
+	static sf::VertexArray va(sf::Quads,4);
+	int j{ 0 };
+
+	for (auto& i : _vertex)
+	{
+		va[j] = i;
+		++j;
+	}
+	window->draw(va);
+}
+
+const vector<sf::Vertex>& Tile::vertexes()
 {
 	return _vertex;
 }
+
 

@@ -29,7 +29,10 @@ public:
 	void size(const sf::Vector2u& boardSize);
 	const sf::Vector2u& size();
 
-	void chechMouseActions();
+	void checkMouseActions(const sf::Mouse::Button& button, const bool & click);
+	void targeted();
+
+	void draw(const shared_ptr<sf::RenderWindow>& window);
 
 	void clear();
 };

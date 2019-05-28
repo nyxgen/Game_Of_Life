@@ -6,13 +6,14 @@ namespace game
 	shared_ptr<Graphics> graphics;
 	shared_ptr<Settings> settings;
 	shared_ptr<Menu> menu;
+	shared_ptr<Control> control;
 }
 
 void game::mainLoop()
 {	
-	GameStates::init(graphics,gameBoard,settings, menu);
+	GameStates::init(graphics,gameBoard,settings, menu, control);
 	sf::Clock MainClock;
-	int controlTime = 1;
+	int controlTime{ 0 };
 	while (graphics->window()->isOpen())
 	{
 		sf::Event event;
@@ -28,40 +29,33 @@ void game::mainLoop()
 			{
 				GameStates::reset(gameBoard, settings);
 				settings->state("pause");
-				controlTime = 100000;
 			}
 			else if (settings->state() == "set")
 			{
-				GameStates::draw(graphics,gameBoard, settings, menu);
-				controlTime = 100000;
+				GameStates::draw(graphics,gameBoard, settings, menu, control);
 			}
 			else if (settings->state() == "game")
 			{
-				GameStates::start(graphics, gameBoard, settings, menu);
-				controlTime = 0;
+				GameStates::start(graphics, gameBoard, settings, menu, control);
 			}
 			else if (settings->state() == "next")
 			{
-				GameStates::next(graphics, gameBoard, settings, menu);
+				GameStates::next(graphics, gameBoard, settings, menu, control);
 				settings->state("pause");
-				controlTime = 100000;
 			}
 			else if (settings->state() == "pause")
 			{
-				GameStates::pause(graphics, gameBoard, settings, menu);
-				controlTime = 100000;
+				GameStates::pause(graphics, gameBoard, settings, menu, control);
 			}
 			else if (settings->state() == "prev")
 			{
 				GameStates::prev(graphics, gameBoard, settings, menu);
 				settings->state("pause");
-				controlTime = 100000;
 			}
 			else if (settings->state() == "save")
 			{
 				FileController::saveStructure("Structures/Saved", false, true, settings, gameBoard);
 				settings->state("pause");
-				controlTime = 100000;
 			}
 			else if (settings->state() == "load")
 			{
@@ -69,13 +63,11 @@ void game::mainLoop()
 				settings->itterationNumber(0);
 				FileController::loadStructure(settings->getFile(), settings, gameBoard);
 				settings->state("pause");
-				controlTime = 100000;
 			}
 			else if (settings->state() == "clear")
 			{
 				gameBoard->clear();
 				settings->state("pause");
-				controlTime = 100000;
 			}
 			else
 			{

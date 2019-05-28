@@ -99,15 +99,76 @@ const sf::Vector2u& Board::size()
 	return _size;
 }
 
-void Board::chechMouseActions()
+void Board::checkMouseActions(const sf::Mouse::Button& button, const bool & click)
 {
 	for (auto& i : (*_board))
 	{
 		for (auto& j : i)
 		{
-			j->setState();
+			if (j->targeted())
+			{
+				j->checkMouseActions(button, click);
+			}
 		}
 	}
+}
+
+void Board::targeted()
+{
+	for (auto& i : (*_board))
+	{
+		for (auto& j : i)
+		{
+			j->targeted();
+		}
+	}
+}
+
+void Board::draw(const shared_ptr<sf::RenderWindow>& window)
+{
+	static sf::VertexArray va(sf::Quads,(_board->size()*(*_board)[0].size()+2)*4);
+	if (_board->size() > 0 && (*_board)[0].size() > 0)
+	{
+		sf::Vector2u over = sf::Vector2u(15, 15);
+		va[0].position = sf::Vector2f(_position - over);
+		va[0].color = sf::Color(125, 125, 125);
+
+		va[1].position = sf::Vector2f(_position.x + _size.x + over.x, _position.y - over.y);
+		va[1].color = sf::Color(125, 125, 125);
+
+		va[2].position = sf::Vector2f(_position + _size + over);
+		va[2].color = sf::Color(125, 125, 125);
+
+		va[3].position = sf::Vector2f(_position.x - over.x, _position.y + _size.y + over.y);
+		va[3].color = sf::Color(125, 125, 125);
+
+		va[4].position = sf::Vector2f(_position);
+		va[4].color = sf::Color(125, 125, 125);
+
+		va[5].position = sf::Vector2f(_position.x + _size.x, _position.y);
+		va[5].color = sf::Color(125, 125, 125);
+
+		va[6].position = sf::Vector2f(_position + _size);
+		va[6].color = sf::Color(125, 125, 125);
+
+		va[7].position = sf::Vector2f(_position.x, _position.y + _size.y);
+		va[7].color = sf::Color(125, 125, 125);
+	}
+
+	int l{ 0 };
+	for (auto& i : (*_board))
+	{
+		for (auto& j : i)
+		{
+			for (auto& k : j->_vertex)
+			{
+				va[8 + l] = k;
+				++l;
+			}
+		}
+	}
+	window->draw(va);
+	
 }
 
 

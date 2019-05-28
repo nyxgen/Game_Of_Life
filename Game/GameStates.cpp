@@ -1,6 +1,6 @@
 #include "GameStates.h"
 
-void GameStates::init(shared_ptr<Graphics>& graphics,shared_ptr<Board>& board, shared_ptr<Settings>& settings, shared_ptr<Menu>& menu)
+void GameStates::init(shared_ptr<Graphics>& graphics,shared_ptr<Board>& board, shared_ptr<Settings>& settings, shared_ptr<Menu>& menu, shared_ptr<Control>& control)
 {
 	graphics = make_shared<Graphics>();
 	graphics->window(make_shared<sf::RenderWindow>(sf::VideoMode::getDesktopMode(), "Game of life", sf::Style::Fullscreen));
@@ -16,6 +16,7 @@ void GameStates::init(shared_ptr<Graphics>& graphics,shared_ptr<Board>& board, s
 	settings->itterationNumber(0);
 	settings->targetFPS(1);
 	settings->currentFPS(1);
+	control = make_shared<Control>();
 
 	if (settings->boundaryCondition() == "NONE")
 		BoundaryConditions::initNone(board);
@@ -25,10 +26,10 @@ void GameStates::init(shared_ptr<Graphics>& graphics,shared_ptr<Board>& board, s
 		BoundaryConditions::initSpherical(board);
 }
 
-void GameStates::draw(const shared_ptr<Graphics>& graphics, const shared_ptr<Board>& board, const shared_ptr<Settings>& settings, const shared_ptr<Menu>& menu)
+void GameStates::draw(const shared_ptr<Graphics>& graphics, const shared_ptr<Board>& board, const shared_ptr<Settings>& settings, const shared_ptr<Menu>& menu, const shared_ptr<Control>& control)
 {
 	graphics->clear();
-	settings->targetFPS(static_cast<int>((menu->button("fpsSlider")->slider() * 1000)));
+	settings->targetFPS(static_cast<int>(menu->button("fpsSlider")->slider() * 1000));
 	if (settings->targetFPS() <= 0)
 		settings->targetFPS(1);
 	try
@@ -38,10 +39,10 @@ void GameStates::draw(const shared_ptr<Graphics>& graphics, const shared_ptr<Boa
 		menu->button("fpsSlider")->text(to_string(settings->targetFPS()));
 	}
 	catch (exception e) {};
-	menu->showMenu();
-	menu->checkMenu();
-	graphics->drawBoard(board);
-	board->chechMouseActions();
+	control->checkMouseActions(menu);
+	control->checkMouseActions(board);
+	graphics->draw(menu);
+	graphics->draw(board);
 	graphics->display();
 }
 
@@ -51,23 +52,23 @@ void GameStates::reset(const shared_ptr<Board>& board, const shared_ptr<Settings
 	FileController::loadStructure(settings->loadedStructure(), settings, board);
 }
 
-void GameStates::next(const shared_ptr<Graphics>& graphics, const shared_ptr<Board>& board, const shared_ptr<Settings>& settings, const shared_ptr<Menu>& menu)
+void GameStates::next(const shared_ptr<Graphics>& graphics, const shared_ptr<Board>& board, const shared_ptr<Settings>& settings, const shared_ptr<Menu>& menu, const shared_ptr<Control>& control)
 {
 	graphics->clear();
-	menu->showMenu();
-	menu->checkMenu();
+	control->checkMouseActions(menu);
 	GameStates::nextItteration(board, settings);
-	graphics->drawBoard(board);
+	graphics->draw(menu);
+	graphics->draw(board);
 	graphics->display();
 }
 
 void GameStates::nextItteration(const shared_ptr<Board>& board, const shared_ptr<Settings>& settings)
 {
 	BoundaryConditions::calc(board);
-	settings->itterationNumber((settings->itterationNumber()) + 1);
+	settings->itterationNumber(settings->itterationNumber() + 1);
 }
 
-void GameStates::pause(const shared_ptr<Graphics>& graphics, const shared_ptr<Board>& board, const shared_ptr<Settings>& settings, const shared_ptr<Menu>& menu)
+void GameStates::pause(const shared_ptr<Graphics>& graphics, const shared_ptr<Board>& board, const shared_ptr<Settings>& settings, const shared_ptr<Menu>& menu, const shared_ptr<Control>& control)
 {
 	graphics->clear();
 	try
@@ -80,9 +81,9 @@ void GameStates::pause(const shared_ptr<Graphics>& graphics, const shared_ptr<Bo
 		menu->button("fpsSlider")->text(to_string(settings->targetFPS()));
 	}
 	catch (exception e) {};
-	menu->showMenu();
-	menu->checkMenu();
-	graphics->drawBoard(board);
+	control->checkMouseActions(menu);
+	graphics->draw(menu);
+	graphics->draw(board);
 	graphics->display();
 }
 
@@ -103,13 +104,13 @@ void GameStates::prev(const shared_ptr<Graphics>& graphics, const shared_ptr<Boa
 
 }
 
-void GameStates::start(const shared_ptr<Graphics>& graphics, const shared_ptr<Board>& board, const shared_ptr<Settings>& settings, const shared_ptr<Menu>& menu)
+void GameStates::start(const shared_ptr<Graphics>& graphics, const shared_ptr<Board>& board, const shared_ptr<Settings>& settings, const shared_ptr<Menu>& menu, const shared_ptr<Control>& control)
 {
 	static sf::Clock clock;
 	graphics->clear();
 	try
 	{
-		settings->targetFPS(static_cast<int>((menu->button("fpsSlider")->slider() * 1000)));
+		settings->targetFPS(static_cast<int>(menu->button("fpsSlider")->slider() * 1000));
 		if (settings->targetFPS() <= 0)
 			settings->targetFPS(1);
 		menu->button("fileBox")->text(settings->getFile());
@@ -118,9 +119,9 @@ void GameStates::start(const shared_ptr<Graphics>& graphics, const shared_ptr<Bo
 		
 	}
 	catch (exception e) {};
-	menu->showMenu();
-	menu->checkMenu();
-	graphics->drawBoard(board);
+	control->checkMouseActions(menu);
+	graphics->draw(menu);
+	graphics->draw(board);
 	sf::Int64 time = clock.getElapsedTime().asMicroseconds();
 	if (time > 1000000 / settings->targetFPS())
 	{
