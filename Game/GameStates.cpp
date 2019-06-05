@@ -2,17 +2,14 @@
 
 void GameStates::init(shared_ptr<Graphics>& graphics,shared_ptr<Board>& board, shared_ptr<Settings>& settings, shared_ptr<Menu>& menu, shared_ptr<Control>& control)
 {
-	graphics = make_shared<Graphics>();
-	graphics->window(make_shared<sf::RenderWindow>(sf::VideoMode::getDesktopMode(), "Game of life", sf::Style::Fullscreen));
 	settings = make_shared<Settings>();
-	FileController::loadSettings("Config/config.ini", settings);
+	menu = make_shared<Menu>(settings);
+	FileController::loadFromFile(settings, "Config/config.ini");
+	FileController::loadStructureFiles(settings, "Structures");
+	FileController::loadFromFile(menu, "Config/menu.cfg");
 	board = make_shared<Board>(settings->tilesNumber());
 	board->size(settings->size());
 	board->position(settings->position());
-	settings->window(graphics->window());
-	FileController::loadStructureFiles(settings);
-	menu = make_shared<Menu>(settings);
-	menu->load("Config/menu.cfg");
 	settings->itterationNumber(0);
 	settings->targetFPS(1);
 	settings->currentFPS(1);
@@ -24,6 +21,8 @@ void GameStates::init(shared_ptr<Graphics>& graphics,shared_ptr<Board>& board, s
 		BoundaryConditions::initCylindrical(board);
 	else if (settings->boundaryCondition() == "SPHERICAL")
 		BoundaryConditions::initSpherical(board);
+	graphics = make_shared<Graphics>();
+	graphics->window(make_shared<sf::RenderWindow>(sf::VideoMode::getDesktopMode(), "Game of life", sf::Style::Fullscreen));
 }
 
 void GameStates::draw(const shared_ptr<Graphics>& graphics, const shared_ptr<Board>& board, const shared_ptr<Settings>& settings, const shared_ptr<Menu>& menu, const shared_ptr<Control>& control)
@@ -92,7 +91,7 @@ void GameStates::prev(const shared_ptr<Graphics>& graphics, const shared_ptr<Boa
 	int it = settings->itterationNumber() - 1;
 	if (it < 0)
 		return;
-	int toLoad = it / 50 * 50;
+	int toLoad = (it / 2500) * 2500;
 	board->clear();
 	FileController::loadStructure("Tmp/" + to_string(toLoad) + ".rle", settings, board);
 	settings->itterationNumber(toLoad);
@@ -123,7 +122,7 @@ void GameStates::start(const shared_ptr<Graphics>& graphics, const shared_ptr<Bo
 	graphics->draw(menu);
 	graphics->draw(board);
 	sf::Int64 time = clock.getElapsedTime().asMicroseconds();
-	if (time > 1000000 / settings->targetFPS())
+	if (time > 1000000 /  settings->targetFPS())
 	{
 		settings->currentFPS(1000000 / static_cast<int>(time));
 		clock.restart();

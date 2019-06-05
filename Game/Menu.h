@@ -22,9 +22,9 @@ public:
 	const shared_ptr<Button>& button(const string& name);
 	void draw(const shared_ptr<sf::RenderWindow>& window);
 	void targeted();
-	void checkMouseActions(const sf::Mouse::Button& button, const bool & click);
+	void checkMouseActions(const sf::Mouse::Button& button, const bool click);
 	void backgroundTexture(const string& path);
-	void load(const string& path);
+	void loadFromFile(const string& path);
 	
 	~Menu();
 };

@@ -4,11 +4,10 @@
 using namespace std;
 class Settings
 {
-	shared_ptr<sf::RenderWindow> _window;
-	string _state;
+	string _state{ "set" };
 	string _loadedStructure;
 	vector<string> _fileList;
-	int _chosenFileNumber;
+	int _chosenFileNumber{ 0 };
 	sf::Vector2u _size;
 	sf::Vector2u _position;
 	sf::Vector2u _tilesNumber;
@@ -20,9 +19,8 @@ public:
 	Settings();
 	~Settings();
 
-	void window(const shared_ptr<sf::RenderWindow>& window);
-	const shared_ptr<sf::RenderWindow>& window();
-
+	void loadFromFile(const string& filePath);
+	void loadStructureFiles(const string& directoryPath);
 	void state(const string& state);
 	const string& state();
 

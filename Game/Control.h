@@ -2,8 +2,8 @@
 #include <SFML/Window.hpp>
 class Control
 {
-	bool lastStateLeft;
-	bool lastStateRight;
+	bool _lastStateLeft{ false };
+	bool _lastStateRight{ false };
 public:
 	Control();
 	~Control();
@@ -16,20 +16,20 @@ inline void Control::checkMouseActions(const T & t)
 {
 	t->targeted();
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-	{
-		lastStateLeft = true;
-		t->checkMouseActions(sf::Mouse::Left, lastStateLeft);
+	{		
+		t->checkMouseActions(sf::Mouse::Left, !_lastStateLeft);
+		_lastStateLeft = true;
 	}
 	else
-		lastStateLeft = false;
+		_lastStateLeft = false;
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
 	{
-		lastStateRight = true;
-		t->checkMouseActions(sf::Mouse::Right, lastStateRight);
+		t->checkMouseActions(sf::Mouse::Right, !_lastStateRight);
+		_lastStateRight = true;
 	}
 	else
-		lastStateRight = false;
+		_lastStateRight = false;
 
 }
 

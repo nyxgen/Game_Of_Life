@@ -168,6 +168,7 @@
     <ClInclude Include="Tile.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="Config\config.ini" />
     <None Include="Config\menu.cfg" />
     <None Include="Glider.rle" />

@@ -1,83 +1,5 @@
 #include "FileController.h"
 
-void FileController::loadSettings(const string& filePath, const shared_ptr<Settings>& settings)
-{
-	boost::property_tree::ptree pt;
-	try
-	{
-		boost::property_tree::ini_parser::read_ini(filePath, pt);
-	}
-	catch (exception e)
-	{
-		settings->tilesNumber(sf::Vector2u(10, 10));
-		settings->size(sf::Vector2u(10, 10));
-		settings->position( sf::Vector2u(10, 10));
-		settings->boundaryCondition("NONE");
-	}
-
-	try {
-		settings->tilesNumber(sf::Vector2u(pt.get<int>("Board.TilesInRow"), pt.get<int>("Board.TilesInColumn")));
-	}
-	catch (exception e)
-	{
-		settings->tilesNumber(sf::Vector2u(10, 10));
-	};
-
-	try {
-		settings->size(sf::Vector2u(pt.get<int>("Board.HorizontalBoardSize"), pt.get<int>("Board.VerticalBoardSize")));
-	}
-	catch (exception e)
-	{
-		settings->size(sf::Vector2u(400, 400));
-	};
-
-
-	try {
-		settings->position(sf::Vector2u(pt.get<int>("Board.HorizontalBoardPosition"), pt.get<int>("Board.HorizontalBoardPosition")));
-	}
-	catch (exception e)
-	{
-		settings->position(sf::Vector2u(10, 10));
-	};
-
-	try {
-		settings->boundaryCondition(pt.get<string>("Game.BoundaryCondition"));
-	}
-	catch (exception e)
-	{
-		settings->boundaryCondition("NONE");
-	};
-	if (settings->tilesNumber().x <= 0)
-	{
-		settings->tilesNumber(sf::Vector2u(10, settings->tilesNumber().y));
-	}
-	if (settings->tilesNumber().y <= 0)
-	{
-		settings->tilesNumber(sf::Vector2u(settings->tilesNumber().x, 10));
-	}
-
-	if (settings->size().x < 2)
-		settings->size(sf::Vector2u(10, settings->size().y));
-	if (settings->size().y < 2)
-		settings->size(sf::Vector2u(settings->size().x, 10));
-
-	if (settings->position().x < 0)
-		settings->position(sf::Vector2u(0,settings->position().y));
-	if (settings->position().y < 0)
-		settings->position(sf::Vector2u(settings->position().x, 10));
-}
-
-void FileController::loadStructureFiles(const shared_ptr<Settings>& settings)
-{
-	for (const auto & entry : boost::filesystem::directory_iterator("Structures"))
-	{
-		if (entry.path().extension().string() == ".rle")
-		{
-			settings->addFile("Structures/" + entry.path().filename().string());
-		}
-	}
-}
-
 void FileController::loadStructure(const string& filePath, const shared_ptr<Settings>& settings, const shared_ptr<Board>& board)
 {
 	boost::filesystem::path p{ filePath };
@@ -197,7 +119,7 @@ void FileController::saveStructure(const string& filePath, const bool& overwrite
 		while (boost::filesystem::exists(filePathCopy + ".rle"))
 		{
 			fileNumber++;
-			filePathCopy = filePathCopy + to_string(fileNumber);
+			filePathCopy = filePath + to_string(fileNumber);
 		}
 	}
 	filePathCopy += ".rle";

@@ -144,7 +144,7 @@ void BoundaryConditions::calc(const shared_ptr<Board>& board)
 			}
 			else if (board->tile(k, l)->alive() && j == 2)
 			{
-				board->alive(k, l, true);
+				//board->alive(k, l, true);
 			}
 			else
 			{

@@ -37,7 +37,7 @@ namespace Functions
 
 	void closeWindow(shared_ptr<Settings>settings)
 	{
-		settings->window()->close();
+		settings->state("exit");
 	}
 
 	void setGameState(shared_ptr<Settings> settings)

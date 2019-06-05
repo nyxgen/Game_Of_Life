@@ -28,7 +28,7 @@ void Menu::targeted()
 	}
 }
 
-void Menu::checkMouseActions(const sf::Mouse::Button& button, const bool & click)
+void Menu::checkMouseActions(const sf::Mouse::Button& button, const bool click)
 {
 	for (auto& i : buttons)
 	{
@@ -45,10 +45,10 @@ void Menu::backgroundTexture(const string& texture)
 	_background.setTexture(&_backgroundTexture);
 }
 
-Menu::Menu(const shared_ptr<Settings>& options, const int& buttonCount)
+Menu::Menu(const shared_ptr<Settings>& settings, const int& buttonCount)
 {
-	_settings = options;
-	sf::Vector2f size = sf::Vector2f(_settings->window()->getSize());
+	_settings = settings;
+	sf::Vector2f size = sf::Vector2f(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height);
 	_background.setSize(size);
 	for (int i = 0; i < buttonCount; ++i)
 	{
@@ -59,11 +59,11 @@ Menu::Menu(const shared_ptr<Settings>& options, const int& buttonCount)
 Menu::Menu(const shared_ptr<Settings>& settings)
 {
 	_settings = settings;
-	sf::Vector2f size = sf::Vector2f(settings->window()->getSize());
+	sf::Vector2f size = sf::Vector2f(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height);
 	_background.setSize(size);
 }
 
-void Menu::load(const string& path)
+void Menu::loadFromFile(const string& path)
 {
 	fstream file;
 	file.open(path, ios::in);
