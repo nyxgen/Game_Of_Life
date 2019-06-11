@@ -31,7 +31,7 @@ void game::mainLoop()
 		}
 		else if (settings->state() == "game")
 		{
-			GameStates::start(graphics, gameBoard, settings, menu, control);
+			GameStates::play(graphics, gameBoard, settings, menu, control);
 		}
 		else if (settings->state() == "next")
 		{

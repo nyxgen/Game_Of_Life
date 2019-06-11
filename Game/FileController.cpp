@@ -4,11 +4,11 @@ void FileController::loadStructure(const string& filePath, const shared_ptr<Sett
 {
 	boost::filesystem::path p{ filePath };
 	boost::filesystem::ifstream ifs{ p };
-	int x = 0, y = 0;
-	int currentPositionX = 0;
-	int currentPositionY = 0;
+	unsigned int x = 0, y = 0;
+	unsigned int currentPositionX = 0;
+	unsigned int currentPositionY = 0;
 	char data;
-	int number = 0;
+	unsigned int number = 0;
 
 	while (!ifs.eof() && ifs.is_open())
 	{
@@ -16,7 +16,7 @@ void FileController::loadStructure(const string& filePath, const shared_ptr<Sett
 		if (data >= 48 && data <= 57)
 		{
 			number *= 10;
-			number += static_cast<int>(data) - 48;
+			number += static_cast<unsigned int>(data) - 48;
 		}
 		else if (data == 'x')
 		{
@@ -28,7 +28,7 @@ void FileController::loadStructure(const string& filePath, const shared_ptr<Sett
 				{
 
 					x *= 10;
-					x += static_cast<int>(data) - 48;
+					x += static_cast<unsigned int>(data) - 48;
 					ifs >> data;
 				}
 				if (x > settings->size().x)
@@ -47,7 +47,7 @@ void FileController::loadStructure(const string& filePath, const shared_ptr<Sett
 				{
 
 					y *= 10;
-					y += static_cast<int>(data) - 48;
+					y += static_cast<unsigned>(data) - 48;
 					ifs >> data;
 				}
 				if (y > settings->size().y)
@@ -58,7 +58,7 @@ void FileController::loadStructure(const string& filePath, const shared_ptr<Sett
 		{
 			if (number == 0)
 				number = 1;
-			for (int i = 0; i < number; ++i)
+			for (unsigned int i = 0; i < number; ++i)
 			{
 				if (currentPositionX >= x)
 				{
@@ -80,7 +80,7 @@ void FileController::loadStructure(const string& filePath, const shared_ptr<Sett
 		{
 			if (number == 0)
 				number = 1;
-			for (int i = 0; i < number; ++i)
+			for (unsigned int i = 0; i < number; ++i)
 			{
 				if (currentPositionX >= x)
 				{
@@ -130,12 +130,12 @@ void FileController::saveStructure(const string& filePath, const bool& overwrite
 	sf::Vector2u currentPosition = sf::Vector2u(0, 0);
 	int number = 0;
 	ofs << "x = " << size.x << ", y = " << size.y << "," << endl;
-	for (int i = 0; i < size.x; i++)
+	for (unsigned int i = 0; i < size.x; i++)
 	{
 		bool written = false;
 		bool lastWrittenAlive = false;
 		bool currentAlive = board->tile(0, i)->alive();
-		for (int j = 0; j < size.y; j++)
+		for (unsigned int j = 0; j < size.y; j++)
 		{
 			if (board->tile(j, i)->alive() != currentAlive)
 			{
@@ -176,5 +176,5 @@ void FileController::saveStructure(const string& filePath, const bool& overwrite
 	}
 	ofs << "!";
 	if (readyToLoad)
-		settings->addFile(filePath);
+		settings->addFile(filePathCopy);
 }

@@ -6,44 +6,46 @@
 #define DEAD sf::Color::Green
 #define FOCUSED sf::Color::Yellow
 
-using namespace std;
+using positionU = sf::Vector2u;
+using coordsU = sf::Vector2u;
+using sizeU = sf::Vector2u;
 
 class Tile
 {
 	friend class Board;
 	bool _alive;
-	sf::Vector2u _position;
-	sf::Vector2u _coords;
-	sf::Vector2u _size;
-	vector<shared_ptr<Tile>> _neighbours;
-	vector<sf::Vertex> _vertex;
+	positionU _position;
+	coordsU _coords;
+	sizeU _size;
+	std::vector<std::shared_ptr<Tile>> _neighbours;
+	std::vector<sf::Vertex> _vertex;
 	sf::FloatRect _border;
 	void alive(const bool& state);
 public:
 	Tile() = delete;
-	Tile(const sf::Vector2u& size, const sf::Vector2u& position, const sf::Vector2u& coords);
+	Tile(const sizeU& size, const positionU& position, const coordsU& coords);
 	~Tile();
 
 	bool const& alive();
 
-	void addNeighbour(const shared_ptr<Tile>& neighbour);
-	const vector<shared_ptr<Tile>>& neighbours();
+	void addNeighbour(const std::shared_ptr<Tile>& neighbour);
+	const std::vector<std::shared_ptr<Tile>>& neighbours();
 	void clearNeighbours();
 
-	void position(const sf::Vector2u& position);
-	sf::Vector2u const& position();
+	void position(const positionU& position);
+	const positionU & position();
 
-	void size(const sf::Vector2u& size);
-	sf::Vector2u const& size();
+	void size(const sizeU& size);
+	const sizeU & size();
 
 	bool targeted();
 	void checkMouseActions(const sf::Mouse::Button& button, const bool & click);
 
-	void coords(const sf::Vector2u& coords);
-	const sf::Vector2u& coords();
+	void coords(const coordsU& coords);
+	const coordsU & coords();
 
-	void draw(const shared_ptr<sf::RenderWindow>& window);
-	vector<sf::Vertex> const& vertexes();
+	void draw(const std::shared_ptr<sf::RenderWindow>& window);
+	std::vector<sf::Vertex> const& vertexes();
 
 };
 

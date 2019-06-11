@@ -103,7 +103,7 @@ void GameStates::prev(const shared_ptr<Graphics>& graphics, const shared_ptr<Boa
 
 }
 
-void GameStates::start(const shared_ptr<Graphics>& graphics, const shared_ptr<Board>& board, const shared_ptr<Settings>& settings, const shared_ptr<Menu>& menu, const shared_ptr<Control>& control)
+void GameStates::play(const shared_ptr<Graphics>& graphics, const shared_ptr<Board>& board, const shared_ptr<Settings>& settings, const shared_ptr<Menu>& menu, const shared_ptr<Control>& control)
 {
 	static sf::Clock clock;
 	graphics->clear();

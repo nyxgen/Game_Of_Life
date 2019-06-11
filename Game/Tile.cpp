@@ -1,7 +1,8 @@
 #include "Tile.h"
 
+using namespace std;
 
-Tile::Tile(const sf::Vector2u& size, const sf::Vector2u& position, const sf::Vector2u& coords) : _alive(false)
+Tile::Tile(const sizeU& size, const positionU& position, const coordsU& coords) : _alive(false)
 {
 	using namespace sf;
 
@@ -31,7 +32,7 @@ Tile::~Tile()
 {
 }
 
-bool const& Tile::alive()
+const bool & Tile::alive()
 {
 	return _alive;
 }
@@ -65,12 +66,12 @@ void Tile::alive(const bool& state)
 	}
 }
 
-sf::Vector2u const& Tile::position()
+const positionU & Tile::position()
 {
 	return _position;
 }
 
-void Tile::position(const sf::Vector2u& position)
+void Tile::position(const positionU& position)
 {
 	using namespace sf;
 
@@ -89,12 +90,12 @@ void Tile::position(const sf::Vector2u& position)
 	}
 }
 
-sf::Vector2u const& Tile::size()
+const sizeU & Tile::size()
 {
 	return _size;
 }
 
-void Tile::size(const sf::Vector2u& size)
+void Tile::size(const sizeU& size)
 {
 	using namespace sf;
 
@@ -147,12 +148,12 @@ void Tile::checkMouseActions(const sf::Mouse::Button& button, const bool & click
 	}
 }
 
-void Tile::coords(const sf::Vector2u & coords)
+void Tile::coords(const coordsU & coords)
 {
 	_coords = coords;
 }
 
-const sf::Vector2u & Tile::coords()
+const coordsU & Tile::coords()
 {
 	return _coords;
 }

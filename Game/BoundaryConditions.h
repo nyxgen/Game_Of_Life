@@ -3,12 +3,12 @@
 
 namespace BoundaryConditions
 {
-	void initNone(const shared_ptr<Board>& board);
+	void initNone(const std::shared_ptr<Board>& board);
 	
-	void initCylindrical(const shared_ptr<Board>& board);
+	void initCylindrical(const std::shared_ptr<Board>& board);
 
-	void initSpherical(const shared_ptr<Board>& board);
+	void initSpherical(const std::shared_ptr<Board>& board);
 
-	void calc(const shared_ptr<Board>& board);
+	void calc(const std::shared_ptr<Board>& board);
 };
 
