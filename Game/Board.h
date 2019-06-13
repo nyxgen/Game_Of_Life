@@ -9,7 +9,6 @@ using numberU = sf::Vector2u;
 class Board
 {
 	std::shared_ptr<std::vector<std::vector<std::shared_ptr<Tile>>>> _board;
-	sf::VertexArray _vertexArray;
 	positionU _position;
 	sizeU _size;
 public:

@@ -1,20 +1,20 @@
 #include "Board.h"
-
 using namespace std;
 
-Board::Board(const numberU& tilesCount)
+
+Board::Board(const numberU& tilesNumber)
 {
 	_position = positionU(0, 0);
 	_board = make_shared<vector<vector<shared_ptr<Tile>>>>();
-	_board->resize(tilesCount.x);
+	_board->resize(tilesNumber.x);
 	int k{ 0 };
 	int l{ 0 };
 	for (auto& i : (*_board))
 	{
-		i.resize(tilesCount.y);
+		i.resize(tilesNumber.y);
 		for (auto& j : i)
 		{
-			j = make_shared<Tile>(positionU(_position.x + k * _size.x / tilesCount.x, _position.y + l *_size.y / tilesCount.y), sizeU(_size.x / tilesCount.x, _size.y / tilesCount.y), coordsU(k,l));
+			j = make_shared<Tile>(positionU(_position.x + k * _size.x / tilesNumber.x, _position.y + l *_size.y / tilesNumber.y), sizeU(_size.x / tilesNumber.x, _size.y / tilesNumber.y), coordsU(k,l));
 			++l;
 		}
 		++k;
@@ -141,7 +141,7 @@ void Board::targeted()
 
 void Board::draw(const shared_ptr<sf::RenderWindow>& window)
 {
-	static sf::VertexArray va(sf::Quads,(_board->size()*(*_board)[0].size()+2)*4);
+	static sf::VertexArray va(sf::Quads, (_board->size()*(*_board)[0].size() + 2) * 4);
 	if (_board->size() > 0 && (*_board)[0].size() > 0)
 	{
 		sizeU over = sizeU(15, 15);
@@ -171,8 +171,10 @@ void Board::draw(const shared_ptr<sf::RenderWindow>& window)
 	}
 
 	int l{ 0 };
+
 	for (auto& i : (*_board))
 	{
+
 		for (auto& j : i)
 		{
 			for (auto& k : j->_vertex)
@@ -181,11 +183,11 @@ void Board::draw(const shared_ptr<sf::RenderWindow>& window)
 				++l;
 			}
 		}
+
 	}
 	window->draw(va);
-	
-}
 
+}
 
 void Board::clear()
 {
@@ -197,3 +199,4 @@ void Board::clear()
 		}
 	}
 }
+

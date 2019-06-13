@@ -173,7 +173,9 @@ void Tile::draw(const shared_ptr<sf::RenderWindow>& window)
 
 const vector<sf::Vertex>& Tile::vertexes()
 {
+	
 	return _vertex;
 }
+
 
 

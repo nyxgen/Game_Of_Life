@@ -1,5 +1,7 @@
 #include "GameStates.h"
 
+using namespace std;
+
 void GameStates::init(shared_ptr<Graphics>& graphics,shared_ptr<Board>& board, shared_ptr<Settings>& settings, shared_ptr<Menu>& menu, shared_ptr<Control>& control)
 {
 	settings = make_shared<Settings>();
@@ -120,6 +122,7 @@ void GameStates::play(const shared_ptr<Graphics>& graphics, const shared_ptr<Boa
 	catch (exception e) {};
 	control->checkMouseActions(menu);
 	graphics->draw(menu);
+	
 	graphics->draw(board);
 	sf::Int64 time = clock.getElapsedTime().asMicroseconds();
 	if (time > 1000000 /  settings->targetFPS())
@@ -128,5 +131,6 @@ void GameStates::play(const shared_ptr<Graphics>& graphics, const shared_ptr<Boa
 		clock.restart();
 		GameStates::nextItteration(board, settings);
 	}
+
 	graphics->display();
 }
